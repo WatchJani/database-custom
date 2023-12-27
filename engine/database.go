@@ -1,12 +1,11 @@
 package engine
 
-import "errors"
+import (
+	"errors"
+)
 
 // data base error handler
-const (
-	TABLE_EXIST     string = "[DATABASE] Table already exist!"
-	TABLE_NOT_EXIST string = "[DATABASE] Table not exist yet!"
-)
+
 
 type DataBase struct {
 	name  string
@@ -30,4 +29,14 @@ func NewDataBase(name string) *DataBase {
 
 func (db *DataBase) AddTable(name string, table *Table) {
 	db.table[name] = table
+}
+
+func (db *DataBase) AddIndex(table, index string) error {
+	user, err := db.SelectTable(table)
+	if err != nil {
+		return err
+	}
+
+	user.AddIndex(index)
+	return nil
 }
