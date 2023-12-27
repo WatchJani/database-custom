@@ -14,7 +14,7 @@ type DataBase struct {
 }
 
 func (db DataBase) SelectTable(name string) (*Table, error) {
-	if table, ok := db.table[name]; !ok {
+	if table, ok := db.table[name]; ok {
 		return table, nil
 	}
 
@@ -26,4 +26,8 @@ func NewDataBase(name string) *DataBase {
 		name:  name,
 		table: make(map[string]*Table),
 	}
+}
+
+func (db *DataBase) AddTable(name string, table *Table) {
+	db.table[name] = table
 }

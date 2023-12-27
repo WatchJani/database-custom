@@ -14,13 +14,7 @@ type Table struct {
 	allIndex map[string]index.CustomIndexer
 }
 
-func (d *DataBase) NewTable(name string) (*Table, error) {
-	if _, ok := d.table[name]; ok {
-		return nil, errors.New(TABLE_EXIST)
-	}
-
-	//CREATE NEW FILE FOR OUR TABLE
-
+func newTable(name string) *Table {
 	return &Table{
 		name:  name,
 		index: []index.CustomIndexer{hash_map.NewHashMap()}, //default index
@@ -29,7 +23,20 @@ func (d *DataBase) NewTable(name string) (*Table, error) {
 			"trie":       trie.NewTrie(),
 			"b_tree":     btree.NewBTree(),
 		},
-	}, nil
+	}
+}
+
+func (db *DataBase) CreateTable(name string) (*Table, error) {
+	if _, ok := db.table[name]; ok {
+		return nil, errors.New(TABLE_EXIST)
+	}
+
+	//CREATE NEW FILE FOR OUR TABLE
+
+	table := newTable(name)
+	db.AddTable(name, table)
+
+	return table, nil
 }
 
 func (t *Table) AddIndex(name string) {
